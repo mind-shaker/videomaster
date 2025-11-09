@@ -8,7 +8,6 @@
     body {font-family: Arial; text-align: center; padding: 40px; background:#f0f0f0;}
     h1 {color:#fe2c55;}
     button {padding:15px 30px; margin:20px; font-size:18px; cursor:pointer; background:#fe2c55; color:white; border:none; border-radius:8px;}
-    button:disabled {background:#aaa; cursor:not-allowed;}
     #status {margin:30px; font-size:20px; min-height:50px;}
     .progress {width:80%; height:20px; background:#ddd; margin:20px auto; border-radius:10px; overflow:hidden;}
     .bar {height:100%; width:0%; background:#fe2c55; transition:width 0.5s;}
@@ -26,53 +25,37 @@
   <div class="progress"><div class="bar" id="bar"></div></div>
 
   <script>
-    // ←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←
-    // ЗАМІНИ ЦЕ НА СВОЇ ДАНІ З TikTok Developers Portal
-    const CLIENT_KEY = "твій_client_key_тут"; // наприклад: aw1234567890abcdef
-    const REDIRECT_URI = "https://твій-username.github.io/tiktok-terms/demo.html";
-    // ←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←
-
+    let step = 0;
     function login() {
-      const authUrl = `https://www.tiktok.com/v2/auth/authorize/?client_key=${CLIENT_KEY}&scope=user.info.basic,video.upload,video.publish&response_type=code&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&state=xyz123`;
-      document.getElementById("status").innerHTML = "Відкриваємо TikTok для логіну...";
-      window.open(authUrl, "_blank");
-      
-      // Після логіну TikTok поверне на цю ж сторінку з ?code=...
-      const urlParams = new URLSearchParams(window.location.search);
-      const code = urlParams.get('code');
-      if (code) {
-        // Імітуємо отримання токена і юзерінфо
-        document.getElementById("status").innerHTML = "Успішно залогінено як <strong>@user7983286876541</strong>";
+      document.getElementById("status").innerHTML = "Відкриваємо TikTok Login...";
+      window.open("https://www.tiktok.com/login", "_blank");
+      setTimeout(() => {
+        document.getElementById("status").innerHTML = "Успішно залогінено як @user7983286876541";
         document.getElementById("selectBtn").disabled = false;
-        history.replaceState(null, null, window.location.pathname); // прибираємо ?code з URL
-      }
+        step = 1;
+      }, 4000);
     }
 
     function selectShort() {
-      document.getElementById("status").innerHTML = "Обрано шорт: klap_short_01.mp4 (з AI-генератора)";
+      document.getElementById("status").innerHTML = "Обрано шорт: example_short.mp4 (з Klap)";
       document.getElementById("publishBtn").disabled = false;
+      step = 2;
     }
 
     function publish() {
-      document.getElementById("status").innerHTML = "Завантаження... (video.upload)";
+      document.getElementById("status").innerHTML = "Завантажуємо... (video.upload)";
       let bar = document.getElementById("bar");
       let w = 0;
-      const int = setInterval(() => {
+      let int = setInterval(() => {
         w += 10;
         bar.style.width = w + "%";
         if (w >= 100) {
           clearInterval(int);
           document.getElementById("status").innerHTML = 
-            'ГОТОВО! Опубліковано (video.publish)<br><a href="https://www.tiktok.com/@user7983286876541" target="_blank">Переглянути на TikTok</a>';
+            'ГОТОВО! Опубліковано (video.publish)<br><a href="https://www.tiktok.com/@your_nick" target="_blank">Переглянути на TikTok</a>';
         }
       }, 600);
     }
-
-    // Автоматична перевірка, чи ми вже після redirect
-    window.onload = () => {
-      const urlParams = new URLSearchParams(window.location.search);
-      if (urlParams.get('code')) login();
-    };
   </script>
 </body>
 </html>
